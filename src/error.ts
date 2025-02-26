@@ -36,24 +36,14 @@ export class APIError<
   }
 
   private static makeMessage(status: number | undefined, error: any, message: string | undefined) {
-    const msg =
-      error?.message ?
-        typeof error.message === 'string' ?
-          error.message
-        : JSON.stringify(error.message)
-      : error ? JSON.stringify(error)
-      : message;
+    const msg = error 
+        ? typeof error.message === 'string' 
+            ? error.message 
+            : JSON.stringify(error.message ?? error) 
+        : message;
 
-    if (status && msg) {
-      return `${status} ${msg}`;
-    }
-    if (status) {
-      return `${status} status code (no body)`;
-    }
-    if (msg) {
-      return msg;
-    }
-    return '(no status code or body)';
+    if (status) return msg ? `${status} ${msg}` : `${status} status code (no body)`;
+    return msg ?? '(no status code or body)';
   }
 
   static generate(
